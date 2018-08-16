@@ -11,12 +11,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 {
+    //清除所有的线
     ui->customPlot->clearGraphs();
+    //ui->customPlot->mousePressEvent();
     //ui->customPlot->close();
     //QCustomPlot *customPlot=ui->customPlot;
+    //自适应宽度与移动与
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
-    customPlot->addGraph();
-    customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
+    customPlot->addGraph();//真加一条线
+    customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph//设置蓝色的比
     //customPlot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20))); // first graph will be filled with translucent blue
 //    customPlot->addGraph();
 //    customPlot->graph(1)->setPen(QPen(Qt::red)); // line color red for second graph
@@ -25,7 +28,9 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 
    // customPlot->xAxis->addTickTriangle(key+2);
     customPlot->xAxis->addTickTriangle(key+8);
-    customPlot->xAxis->addTickTriangle(key+6);
+    customPlot->xAxis->addTickTriangle(key+3);
+    customPlot->xAxis->addTickTriangle(key+3.5);
+    customPlot->xAxis->addTickTriangle(key+6);//增加一条小三角
 //    customPlot->xAxis->addTickTriangle(key+8);
     customPlot->xAxis->addTickTriangle(key+10);
     qDebug()<<"key ="<<key;
@@ -39,14 +44,14 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     // configure right and top axis to show ticks but no labels:
     // (see QCPAxisRect::setupFullAxesBox for a quicker method to do this)
     customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    customPlot->xAxis->setDateTimeFormat("hh:mm:ss");
-    customPlot->xAxis->setAutoTickStep(false);
+    customPlot->xAxis->setDateTimeFormat("hh:mm:ss");//设置的时间的格式
+    customPlot->xAxis->setAutoTickStep(false);//设置自适应刻度为false
     customPlot->xAxis->setTickStep(TICKSTEPX);
-    customPlot->yAxis->setTickStep(TICKSTEPY);
+    customPlot->yAxis->setTickStep(TICKSTEPY);//刻度的宽度
     customPlot->axisRect()->setupFullAxesBox();
 
-    customPlot->xAxis2->setVisible(true);
-    customPlot->xAxis2->setTickLabels(false);
+    customPlot->xAxis2->setVisible(true);//设置是否可见
+    customPlot->xAxis2->setTickLabels(false);//设置标签
     customPlot->yAxis2->setVisible(true);
     customPlot->yAxis2->setTickLabels(false);
     // make left and bottom axes always transfer their ranges to right and top axes:
@@ -61,13 +66,13 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     tirgonmetry(customPlot,key+10);
     //customPlot->graph(1)->setData(x, y1);
     // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
-    customPlot->graph(0)->rescaleAxes();
+    customPlot->graph(0)->rescaleAxes();//自适应图片
     // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
     //customPlot->graph(1)->rescaleAxes(true);
     // Note: we could have also just called customPlot->rescaleAxes(); instead
     // Allow user to drag axis ranges with mouse, zoom with mouse wheel and select graphs by clicking:
 
-    customPlot->replot();
+    customPlot->replot();//显示
 }
 
 
@@ -94,3 +99,7 @@ void MainWindow::tirgonmetry(QCustomPlot *customPlot,double x)
     }
      customPlot->graph(count-1)->setData(x0, y0);
 }
+
+
+
+

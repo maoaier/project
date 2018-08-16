@@ -5112,8 +5112,12 @@ void QCPAxis::setSelectedSubTickPen(const QPen &pen)
 
 void QCPAxis::addTickTriangle(const double triangle)
 {
-    mTickVectorTriangle.append(triangle);
-    return ;
+    if(mAxisPainter->type==QCPAxis::atBottom)
+    {
+        mTickVectorTriangle.append(triangle);
+        return ;
+    }
+
 }
 
 /*!
@@ -5798,20 +5802,9 @@ void QCPAxis::draw(QCPPainter *painter)
   QVector<double> subTickPositions; // the final coordToPixel transformed vector passed to QCPAxisPainter
   QVector<double> tickPositions; // the final coordToPixel transformed vector passed to QCPAxisPainter
   QVector<QString> tickLabels; // the final vector passed to QCPAxisPainter
-  //修改*****************************************
-  QVector<double> TickTriange;
-  for(int i=0;i<this->mTickVectorTriangle.size();i++)
-  {
-      TickTriange.append(coordToPixel(mTickVectorTriangle.at(i)));
-  }
-
-  //*********************************************
   tickPositions.reserve(highTick-lowTick+1);
   tickLabels.reserve(highTick-lowTick+1);
   subTickPositions.reserve(mSubTickVector.size());
-  //qDebug("line=%d num=%d lables=%d mSubTickVector.size()=%d\n",__LINE__,num,highTick-lowTick+1,mSubTickVector.size());
-
-
   if (mTicks)
   {
     for (int i=lowTick; i<=highTick; ++i)
@@ -5847,9 +5840,23 @@ void QCPAxis::draw(QCPPainter *painter)
   mAxisPainter->tickPositions = tickPositions;
   mAxisPainter->tickLabels = tickLabels;
   mAxisPainter->subTickPositions = subTickPositions;
+
+  //修改**************************,把值转换为window中的坐标，去除不在框框里面的那个部分。
+  QVector<double> TickTriange;
+  if(mAxisPainter->type==QCPAxis::atBottom)
+  {
+      for(int i=0;i<this->mTickVectorTriangle.size();i++)
+      {
+          double value=coordToPixel(mTickVectorTriangle.at(i));
+          if((value<mAxisPainter->axisRect.bottomLeft().x())||(value>mAxisPainter->axisRect.bottomRight().x()))
+              continue ;
+          TickTriange.append(value);
+      }
+  }
   //修改,增加功能
+  m_cTickTriange=TickTriange;
   mAxisPainter->m_cTickTriange = TickTriange;
-  //*********************88
+  //*********************************************
   mAxisPainter->draw(painter);
 }
 
@@ -6116,6 +6123,7 @@ QCPAxisPainterPrivate::~QCPAxisPainterPrivate()
   
   The selection boxes (mAxisSelectionBox, mTickLabelsSelectionBox, mLabelSelectionBox) are set
   here, too.
+  XIUGAI
 */
 //*************************************修改的部分************************************************************
 void QCPAxisPainterPrivate::draw(QCPPainter *painter)
@@ -6135,7 +6143,8 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
     case QCPAxis::atTop:    origin = axisRect.topLeft()    +QPoint(0, -offset); break;
     case QCPAxis::atBottom: origin = axisRect.bottomLeft() +QPoint(0, +offset); break;
   }
-
+//  qDebug()<<"axisRect.topLeft()"<<axisRect.topLeft().x();
+//  qDebug()<<"axisRect.topLeft().y()"<<axisRect.topLeft().y();
   double xCor = 0, yCor = 0; // paint system correction, for pixel exact matches (affects baselines and ticks of top/right axes)
   switch (type)
   {
@@ -6166,21 +6175,20 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
         for (int i=0; i<tickPositions.size(); ++i)
         {
           painter->drawLine(QLineF(tickPositions.at(i)+xCor, origin.y()-tickLengthOut*tickDir+yCor, tickPositions.at(i)+xCor, origin.y()+tickLengthIn*tickDir+yCor));
-        //修改的部分，画出小三角
-          if(QCPAxis::atBottom==type)
-            qDebug()<<"tickPositions.at(i)="<<tickPositions.at(i);
+        //修改的部分，画出小三角   
+
         }
         if(QCPAxis::atBottom==type)
         {
             QVector<QPointF> aPointF;
-
+            painter->setBrush(QColor(Qt::black));
             for (int j=0; j<m_cTickTriange.size(); ++j)
             {
-                painter->setBrush(QColor(Qt::black));
+
                 aPointF.clear();
-                aPointF.append(QPointF(m_cTickTriange.at(j)+xCor, origin.y()+tickLengthIn*tickDir+yCor));
-                aPointF.append(QPointF(m_cTickTriange.at(j)+xCor+(-tickLengthOut*tickDir-tickLengthIn*tickDir), origin.y()-tickLengthOut*tickDir+yCor));
-                aPointF.append(QPointF(m_cTickTriange.at(j)+xCor-(-tickLengthOut*tickDir-tickLengthIn*tickDir), origin.y()-tickLengthOut*tickDir+yCor));
+                aPointF.append(QPointF(m_cTickTriange.at(j), origin.y()+tickLengthIn*tickDir));
+                aPointF.append(QPointF(m_cTickTriange.at(j)+(-tickLengthIn*tickDir), origin.y()));
+                aPointF.append(QPointF(m_cTickTriange.at(j)-(-tickLengthIn*tickDir), origin.y()));
                 painter->drawPolygon(QPolygonF(aPointF));
                 //painter->drawLine(QLineF(tickPositions.at(i)+xCor, origin.y()-tickLengthOut*tickDir+yCor, tickPositions.at(i)+xCor, origin.y()+tickLengthIn*tickDir+yCor));
             }
@@ -10771,7 +10779,9 @@ void QCustomPlot::mouseDoubleClickEvent(QMouseEvent *event)
   the affected layout element and forwards the event to it.
   
   \see mouseMoveEvent, mouseReleaseEvent
+  XIUGAI
 */
+//鼠标事件触发点
 void QCustomPlot::mousePressEvent(QMouseEvent *event)
 {
   emit mousePress(event);
@@ -10781,8 +10791,9 @@ void QCustomPlot::mousePressEvent(QMouseEvent *event)
   mMouseEventElement = layoutElementAt(event->pos());
   if (mMouseEventElement)
     mMouseEventElement->mousePressEvent(event);
-  
   QWidget::mousePressEvent(event);
+  //处理三角事件
+  triangleClick(event);
 }
 
 /*! \internal
@@ -11034,8 +11045,32 @@ void QCustomPlot::legendRemoved(QCPLegend *legend)
 void QCustomPlot::updateLayerIndices() const
 {
   for (int i=0; i<mLayers.size(); ++i)
-    mLayers.at(i)->mIndex = i;
+      mLayers.at(i)->mIndex = i;
 }
+//XIUGAI
+//************增加三角触发事件。
+void QCustomPlot::triangleClick(QMouseEvent *event)
+{
+    double x1,x2,y1,y2;
+    double x,y;
+    x=event->x();
+    y=event->y();
+    double high=xAxis->mAxisPainter->axisRect.bottomLeft().y();
+    double length=xAxis->mAxisPainter->tickLengthIn;
+    QVector <double> tickTriange=xAxis->m_cTickTriange;
+    for(int i=0;i<tickTriange.size();i++)
+    {
+        x1=tickTriange.at(i)-length;
+        x2=tickTriange.at(i)+length;
+        y1=high-length-length/2;
+        y2=high;
+        if((x>x1&&x<x2)&&(y>y1&&y<y2))
+        {
+            qDebug()<<"鼠标触摸事件成功="<<x<<":"<<y;
+        }
+    }
+}
+//************
 
 /*! \internal
   

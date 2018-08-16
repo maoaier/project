@@ -1199,6 +1199,7 @@ public:
 
   //修改，把传过来的数据写入容器之中**************************************************************
   void addTickTriangle(const double triangle);
+  QVector<double> m_cTickTriange;//储存转换为坐标的值，其中的值代表在windos中的距离。
   //**********************************************************************************************
 
 
@@ -1903,6 +1904,9 @@ protected:
   
   // non-virtual methods:
   void updateLayerIndices() const;
+  //修改，鼠标点击三角处理
+  void triangleClick(QMouseEvent *event);
+  //
   QCPLayerable *layerableAt(const QPointF &pos, bool onlySelectable, QVariant *selectionDetails=0) const;
   void drawBackground(QCPPainter *painter);
   

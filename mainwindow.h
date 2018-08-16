@@ -20,6 +20,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+
+
 private:
    void tirgonmetry(QCustomPlot *customPlot, double x);
    void setupRealtimeDataDemo(QCustomPlot *customPlot);
