@@ -21,7 +21,7 @@ public:
     ~MainWindow();
 
 private slots:
-
+    void exhibition(double coordinate);
 
 private:
    void tirgonmetry(QCustomPlot *customPlot, double x);

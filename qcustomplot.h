@@ -26,6 +26,7 @@
 #ifndef QCUSTOMPLOT_H
 #define QCUSTOMPLOT_H
 
+#include <QMap>
 #include <QObject>
 #include <QPointer>
 #include <QWidget>
@@ -1200,6 +1201,7 @@ public:
   //修改，把传过来的数据写入容器之中**************************************************************
   void addTickTriangle(const double triangle);
   QVector<double> m_cTickTriange;//储存转换为坐标的值，其中的值代表在windos中的距离。
+  QMap <double,double> m_cMapTriange;//用map保存实际坐标与虚拟坐标
   //**********************************************************************************************
 
 
@@ -1694,7 +1696,7 @@ private:
 };
 
 
-class QCP_LIB_DECL QCustomPlot : public QWidget
+class QCP_LIB_DECL  QCustomPlot : public QWidget
 {
   Q_OBJECT
   /// \cond INCLUDE_QPROPERTIES
@@ -1853,7 +1855,7 @@ signals:
   void legendDoubleClick(QCPLegend *legend,  QCPAbstractLegendItem *item, QMouseEvent *event);
   void titleClick(QMouseEvent *event, QCPPlotTitle *title);
   void titleDoubleClick(QMouseEvent *event, QCPPlotTitle *title);
-  
+  void triangleClick(double coordinate);//增加三角点击信号
   void selectionChangedByUser();
   void beforeReplot();
   void afterReplot();
@@ -1904,8 +1906,8 @@ protected:
   
   // non-virtual methods:
   void updateLayerIndices() const;
-  //修改，鼠标点击三角处理
-  void triangleClick(QMouseEvent *event);
+  //修改，鼠标点击三角处理XIUGAI
+  void triangleClickHandle(QMouseEvent *event);
   //
   QCPLayerable *layerableAt(const QPointF &pos, bool onlySelectable, QVariant *selectionDetails=0) const;
   void drawBackground(QCPPainter *painter);

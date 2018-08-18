@@ -5842,6 +5842,7 @@ void QCPAxis::draw(QCPPainter *painter)
   mAxisPainter->subTickPositions = subTickPositions;
 
   //修改**************************,把值转换为window中的坐标，去除不在框框里面的那个部分。
+  m_cMapTriange.clear();
   QVector<double> TickTriange;
   if(mAxisPainter->type==QCPAxis::atBottom)
   {
@@ -5851,6 +5852,7 @@ void QCPAxis::draw(QCPPainter *painter)
           if((value<mAxisPainter->axisRect.bottomLeft().x())||(value>mAxisPainter->axisRect.bottomRight().x()))
               continue ;
           TickTriange.append(value);
+          m_cMapTriange.insert(value,mTickVectorTriangle.at(i));//插入容器
       }
   }
   //修改,增加功能
@@ -10793,7 +10795,7 @@ void QCustomPlot::mousePressEvent(QMouseEvent *event)
     mMouseEventElement->mousePressEvent(event);
   QWidget::mousePressEvent(event);
   //处理三角事件
-  triangleClick(event);
+  triangleClickHandle(event);
 }
 
 /*! \internal
@@ -11049,7 +11051,7 @@ void QCustomPlot::updateLayerIndices() const
 }
 //XIUGAI
 //************增加三角触发事件。
-void QCustomPlot::triangleClick(QMouseEvent *event)
+void QCustomPlot::triangleClickHandle(QMouseEvent *event)
 {
     double x1,x2,y1,y2;
     double x,y;
@@ -11066,7 +11068,11 @@ void QCustomPlot::triangleClick(QMouseEvent *event)
         y2=high;
         if((x>x1&&x<x2)&&(y>y1&&y<y2))
         {
-            qDebug()<<"鼠标触摸事件成功="<<x<<":"<<y;
+            QMap<double,double>::const_iterator  mi=xAxis->m_cMapTriange.find(tickTriange.at(i));
+            if(mi!=xAxis->m_cMapTriange.end())
+            {
+                emit triangleClick(mi.value());
+            }
         }
     }
 }

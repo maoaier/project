@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setupRealtimeDataDemo(ui->customPlot);
+    connect(ui->customPlot,SIGNAL(triangleClick(double)),this,SLOT(exhibition(double)));
 }
 
 void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
@@ -82,6 +83,11 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::exhibition(double coordinate)
+{
+    qDebug()<<"coordinate"<<coordinate;
 }
 
 void MainWindow::tirgonmetry(QCustomPlot *customPlot,double x)
