@@ -23,6 +23,8 @@ public:
 private slots:
     void exhibition(double coordinate);
 
+    void on_pushButton_clicked();
+
 private:
    void tirgonmetry(QCustomPlot *customPlot, double x);
    void setupRealtimeDataDemo(QCustomPlot *customPlot);

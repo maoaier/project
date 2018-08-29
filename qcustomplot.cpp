@@ -5120,6 +5120,30 @@ void QCPAxis::addTickTriangle(const double triangle)
 
 }
 
+bool QCPAxis::deleteTickTriangle(const double triangle)
+{
+    QVector<double> temp;
+    QVector<double>::iterator iter;
+    int falg=0;
+    for (iter=mTickVectorTriangle.begin();iter!=mTickVectorTriangle.end();iter++)
+    {
+        if(*iter==triangle)
+        {
+            falg=-1;
+        }
+        else
+        {
+            temp.append(*iter);
+        }
+    }
+    mTickVectorTriangle.clear();
+    mTickVectorTriangle=temp;
+    if(0==falg)
+        return false;
+    else
+        return true;
+}
+
 /*!
   Sets the style for the lower axis ending. See the documentation of QCPLineEnding for available
   styles.
@@ -5794,9 +5818,6 @@ void QCPAxis::applyDefaultAntialiasingHint(QCPPainter *painter) const
 */
 void QCPAxis::draw(QCPPainter *painter)
 {
-  static int num=0;
-  num++;
-
   const int lowTick = mLowestVisibleTick;
   const int highTick = mHighestVisibleTick;
   QVector<double> subTickPositions; // the final coordToPixel transformed vector passed to QCPAxisPainter

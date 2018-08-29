@@ -28,6 +28,8 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     double key = 1.53378e+09;//QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 
    // customPlot->xAxis->addTickTriangle(key+2);
+    customPlot->xAxis->addTickTriangle(key+20);
+    customPlot->xAxis->addTickTriangle(key+50);
     customPlot->xAxis->addTickTriangle(key+8);
     customPlot->xAxis->addTickTriangle(key+3);
     customPlot->xAxis->addTickTriangle(key+3.5);
@@ -87,7 +89,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::exhibition(double coordinate)
 {
-    qDebug()<<"coordinate"<<coordinate;
+    qDebug("coordinate=%f",coordinate);
 }
 
 void MainWindow::tirgonmetry(QCustomPlot *customPlot,double x)
@@ -109,3 +111,17 @@ void MainWindow::tirgonmetry(QCustomPlot *customPlot,double x)
 
 
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    double key = 1.53378e+09;
+    QCustomPlot *customPlot=ui->customPlot;
+    bool bo;
+    bo=customPlot->xAxis->deleteTickTriangle(key+50);
+    qDebug()<<"\nbo="<<bo;
+    bo=customPlot->xAxis->deleteTickTriangle(key+8);
+    qDebug()<<"\nbo="<<bo;
+    bo=customPlot->xAxis->deleteTickTriangle(key+6);
+    customPlot->replot();
+    qDebug()<<"\nbo="<<bo;
+}

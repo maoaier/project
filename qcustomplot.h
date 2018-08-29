@@ -1200,8 +1200,7 @@ public:
 
   //修改，把传过来的数据写入容器之中**************************************************************
   void addTickTriangle(const double triangle);
-  QVector<double> m_cTickTriange;//储存转换为坐标的值，其中的值代表在windos中的距离。
-  QMap <double,double> m_cMapTriange;//用map保存实际坐标与虚拟坐标
+  bool deleteTickTriangle(const double triangle);
   //**********************************************************************************************
 
 
@@ -1289,6 +1288,8 @@ protected:
 
   //修改，增加显示三角数据的容器***********************************************************************
   QVector<double> mTickVectorTriangle;
+  QVector<double> m_cTickTriange;//储存转换为坐标的值，其中的值代表在windos中的距离。
+  QMap <double,double> m_cMapTriange;//用map保存实际坐标与虚拟坐标
   //*********************************************************************************************
 
   QVector<QString> mTickVectorLabels;
@@ -1324,7 +1325,6 @@ protected:
   
 private:
   Q_DISABLE_COPY(QCPAxis)
-  
   friend class QCustomPlot;
   friend class QCPGrid;
   friend class QCPAxisRect;
@@ -1372,7 +1372,7 @@ public:
   
   QVector<double> subTickPositions;
   QVector<double> tickPositions;
-  //*****************************修改三角
+  //*****************************修改三角XIUGAI
   QVector<double> m_cTickTriange;
   //*****************************************
   QVector<QString> tickLabels;
