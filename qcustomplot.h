@@ -1196,15 +1196,11 @@ public:
   void setSelectedBasePen(const QPen &pen);
   void setSelectedTickPen(const QPen &pen);
   void setSelectedSubTickPen(const QPen &pen);
-
-
   //修改，把传过来的数据写入容器之中**************************************************************
-  //void addTickTriangle(const double triangle);
+  //void addTickTriangle(const double triangle);//一个一个增加小三角
   void setTickTriangle(QVector<double> &triangle);
-  //bool deleteTickTriangle(const double triangle);
+  //bool deleteTickTriangle(const double triangle);//一个一个删除小三角
   //**********************************************************************************************
-
-
   Q_SLOT void setSelectableParts(const QCPAxis::SelectableParts &selectableParts);
   Q_SLOT void setSelectedParts(const QCPAxis::SelectableParts &selectedParts);
   void setLowerEnding(const QCPLineEnding &ending);
@@ -1292,7 +1288,6 @@ protected:
   QVector<double> m_cTickTriange;//储存转换为坐标的值，其中的值代表在windos中的距离。
   QMap <double,double> m_cMapTriange;//用map保存实际坐标与虚拟坐标
   //*********************************************************************************************
-
   QVector<QString> mTickVectorLabels;
   QVector<double> mSubTickVector;
   bool mCachedMarginValid;

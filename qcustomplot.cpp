@@ -5110,12 +5110,12 @@ void QCPAxis::setSelectedSubTickPen(const QPen &pen)
     mSelectedSubTickPen = pen;
 }
 
+//一个一个增加小三角
 //void QCPAxis::addTickTriangle(const double triangle)
 //{
 //    if(mAxisPainter->type==QCPAxis::atBottom)
 //    {
 //        mTickVectorTriangle.append(triangle);
-
 //    }
 //     return ;
 //}
@@ -5133,7 +5133,7 @@ void QCPAxis::setTickTriangle(QVector <double> &triangle)
 
 }
 
-
+//一个一个删除小三角
 //bool QCPAxis::deleteTickTriangle(const double triangle)
 //{
 //    QVector<double> temp;
@@ -6194,8 +6194,6 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
     case QCPAxis::atTop:    origin = axisRect.topLeft()    +QPoint(0, -offset); break;
     case QCPAxis::atBottom: origin = axisRect.bottomLeft() +QPoint(0, +offset); break;
   }
-//  qDebug()<<"axisRect.topLeft()"<<axisRect.topLeft().x();
-//  qDebug()<<"axisRect.topLeft().y()"<<axisRect.topLeft().y();
   double xCor = 0, yCor = 0; // paint system correction, for pixel exact matches (affects baselines and ticks of top/right axes)
   switch (type)
   {
@@ -6227,7 +6225,6 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
         {
           painter->drawLine(QLineF(tickPositions.at(i)+xCor, origin.y()-tickLengthOut*tickDir+yCor, tickPositions.at(i)+xCor, origin.y()+tickLengthIn*tickDir+yCor));
         //修改的部分，画出小三角   
-
         }
         if(QCPAxis::atBottom==type)
         {
@@ -6235,7 +6232,6 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
             painter->setBrush(QColor(Qt::black));
             for (int j=0; j<m_cTickTriange.size(); ++j)
             {
-
                 aPointF.clear();
                 aPointF.append(QPointF(m_cTickTriange.at(j), origin.y()+tickLengthIn*tickDir));
                 aPointF.append(QPointF(m_cTickTriange.at(j)+(-tickLengthIn*tickDir), origin.y()));
@@ -6244,7 +6240,6 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
                 //painter->drawLine(QLineF(tickPositions.at(i)+xCor, origin.y()-tickLengthOut*tickDir+yCor, tickPositions.at(i)+xCor, origin.y()+tickLengthIn*tickDir+yCor));
             }
         }
-
         //***********************************************************************
     } else
     {
