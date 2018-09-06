@@ -1199,8 +1199,9 @@ public:
 
 
   //修改，把传过来的数据写入容器之中**************************************************************
-  void addTickTriangle(const double triangle);
-  bool deleteTickTriangle(const double triangle);
+  //void addTickTriangle(const double triangle);
+  void setTickTriangle(QVector<double> &triangle);
+  //bool deleteTickTriangle(const double triangle);
   //**********************************************************************************************
 
 

@@ -20,22 +20,17 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     //自适应宽度与移动与
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     customPlot->addGraph();//真加一条线
-    customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph//设置蓝色的比
-    //customPlot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20))); // first graph will be filled with translucent blue
-//    customPlot->addGraph();
-//    customPlot->graph(1)->setPen(QPen(Qt::red)); // line color red for second graph
-    // generate some points of data (y0 for first, y1 for second graph):
-    double key = 1.53378e+09;//QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
-
-   // customPlot->xAxis->addTickTriangle(key+2);
-    customPlot->xAxis->addTickTriangle(key+20);
-    customPlot->xAxis->addTickTriangle(key+50);
-    customPlot->xAxis->addTickTriangle(key+8);
-    customPlot->xAxis->addTickTriangle(key+3);
-    customPlot->xAxis->addTickTriangle(key+3.5);
-    customPlot->xAxis->addTickTriangle(key+6);//增加一条小三角
-//    customPlot->xAxis->addTickTriangle(key+8);
-    customPlot->xAxis->addTickTriangle(key+10);
+    double key = 1.53378e+09;
+    QVector<double> tickTriange;
+    for(int i=0;i<10;i++)
+    {
+           tickTriange.append(key+i*i);
+    }
+    for(int i=0;i<10;i++)
+    {
+           tickTriange.append(key+i+i);
+    }
+    customPlot->xAxis->setTickTriangle(tickTriange);
     qDebug()<<"key ="<<key;
     QVector<double> x(251), y0(251);// y1(251);
     for (int i=0; i<251; ++i)
@@ -57,24 +52,13 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     customPlot->xAxis2->setTickLabels(false);//设置标签
     customPlot->yAxis2->setVisible(true);
     customPlot->yAxis2->setTickLabels(false);
-    // make left and bottom axes always transfer their ranges to right and top axes:
-//    connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
-//    connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
-    // pass data points to graphs:
     customPlot->graph(0)->setData(x, y0);
     tirgonmetry(customPlot,key+2);
     tirgonmetry(customPlot,key+4);
     tirgonmetry(customPlot,key+6);
     tirgonmetry(customPlot,key+8);
     tirgonmetry(customPlot,key+10);
-    //customPlot->graph(1)->setData(x, y1);
-    // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
     customPlot->graph(0)->rescaleAxes();//自适应图片
-    // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
-    //customPlot->graph(1)->rescaleAxes(true);
-    // Note: we could have also just called customPlot->rescaleAxes(); instead
-    // Allow user to drag axis ranges with mouse, zoom with mouse wheel and select graphs by clicking:
-
     customPlot->replot();//显示
 }
 
@@ -114,14 +98,6 @@ void MainWindow::tirgonmetry(QCustomPlot *customPlot,double x)
 
 void MainWindow::on_pushButton_clicked()
 {
-    double key = 1.53378e+09;
     QCustomPlot *customPlot=ui->customPlot;
-    bool bo;
-    bo=customPlot->xAxis->deleteTickTriangle(key+50);
-    qDebug()<<"\nbo="<<bo;
-    bo=customPlot->xAxis->deleteTickTriangle(key+8);
-    qDebug()<<"\nbo="<<bo;
-    bo=customPlot->xAxis->deleteTickTriangle(key+6);
     customPlot->replot();
-    qDebug()<<"\nbo="<<bo;
 }

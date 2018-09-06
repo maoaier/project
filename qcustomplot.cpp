@@ -5110,39 +5110,53 @@ void QCPAxis::setSelectedSubTickPen(const QPen &pen)
     mSelectedSubTickPen = pen;
 }
 
-void QCPAxis::addTickTriangle(const double triangle)
+//void QCPAxis::addTickTriangle(const double triangle)
+//{
+//    if(mAxisPainter->type==QCPAxis::atBottom)
+//    {
+//        mTickVectorTriangle.append(triangle);
+
+//    }
+//     return ;
+//}
+
+
+void QCPAxis::setTickTriangle(QVector <double> &triangle)
 {
     if(mAxisPainter->type==QCPAxis::atBottom)
     {
-        mTickVectorTriangle.append(triangle);
-        return ;
+        mTickVectorTriangle.clear();
+        qSort(triangle.begin(),triangle.end());
+        mTickVectorTriangle=triangle;
     }
+    return ;
 
 }
 
-bool QCPAxis::deleteTickTriangle(const double triangle)
-{
-    QVector<double> temp;
-    QVector<double>::iterator iter;
-    int falg=0;
-    for (iter=mTickVectorTriangle.begin();iter!=mTickVectorTriangle.end();iter++)
-    {
-        if(*iter==triangle)
-        {
-            falg=-1;
-        }
-        else
-        {
-            temp.append(*iter);
-        }
-    }
-    mTickVectorTriangle.clear();
-    mTickVectorTriangle=temp;
-    if(0==falg)
-        return false;
-    else
-        return true;
-}
+
+//bool QCPAxis::deleteTickTriangle(const double triangle)
+//{
+//    QVector<double> temp;
+//    QVector<double>::iterator iter;
+//    int falg=0;
+//    for (iter=mTickVectorTriangle.begin();iter!=mTickVectorTriangle.end();iter++)
+//    {
+//        if(*iter==triangle)
+//        {
+//            falg=-1;
+//        }
+//        else
+//        {
+//            temp.append(*iter);
+//        }
+//    }
+//    mTickVectorTriangle.clear();
+//    mTickVectorTriangle=temp;
+//    if(0==falg)
+//        return false;
+//    else
+//        return true;
+//}
 
 /*!
   Sets the style for the lower axis ending. See the documentation of QCPLineEnding for available
@@ -5867,13 +5881,27 @@ void QCPAxis::draw(QCPPainter *painter)
   QVector<double> TickTriange;
   if(mAxisPainter->type==QCPAxis::atBottom)
   {
-      for(int i=0;i<this->mTickVectorTriangle.size();i++)
+      if(mTickVectorTriangle.size()>0)
       {
-          double value=coordToPixel(mTickVectorTriangle.at(i));
-          if((value<mAxisPainter->axisRect.bottomLeft().x())||(value>mAxisPainter->axisRect.bottomRight().x()))
-              continue ;
-          TickTriange.append(value);
-          m_cMapTriange.insert(value,mTickVectorTriangle.at(i));//插入容器
+        double valueStart=coordToPixel(mTickVectorTriangle.at(0));
+        double ValueEnd=coordToPixel(mTickVectorTriangle.at(mTickVectorTriangle.size()-1));
+        if((valueStart<mAxisPainter->axisRect.bottomRight().x())&&(ValueEnd>mAxisPainter->axisRect.bottomLeft().x()))
+        {
+            int state=0;
+            for(int i=0;i<this->mTickVectorTriangle.size();i++)
+            {
+             double value=coordToPixel(mTickVectorTriangle.at(i));
+             if((value<mAxisPainter->axisRect.bottomLeft().x())||(value>mAxisPainter->axisRect.bottomRight().x()))
+             {
+                 if(1==state)
+                     break;
+                 continue ;
+             }
+             TickTriange.append(value);
+             m_cMapTriange.insert(value,mTickVectorTriangle.at(i));//插入容器
+             state=1;
+            }
+        }
       }
   }
   //修改,增加功能

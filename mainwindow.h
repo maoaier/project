@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtAlgorithms>
+#include <QVector>
 #include "qcustomplot.h"
 #include <qmath.h>
 #define TICKSTEPX 2
